@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babushka</title>
+
+    <style>
+        html {
+            margin: 0;
+        }
+
+        header {
+            background-color: rgba(250, 147, 9, 0.76);
+        }
+        body {
+            font-family: , sans-serif;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            text-transform: capitalize;
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        h3 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 50px;
+            margin: 0;
+            color: white;
+        }
+
+        nav {
+            text-align: center;
+        }
+
+       .menu-item {
+            text-transform: uppercase;
+            font-family: sans-serif;
+            background-color: rgba(250, 147, 9, 0.76);
+            color: white;
+        }
+
+        .button {}
+
+        .retContainer {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        @media only screen and (max-width: 1229px) {
+            .retContainer {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media only screen and (max-width: 830px) {
+            .ret img {
+                width: 100%
+            }
+
+            .retContainer {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media only screen and (max-width: 425px) {
+            .ret img {
+                width: 100%
+            }
+
+            .retContainer {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ;
+    </style>
+</head>
+
+<body>
+    <header>
+        <h3>Bistro Babushka</h3>
+        <h1>Menu</h1>
+        <nav>
+            <button class="menu-item" data-kategori="alle">Alle retter</button>
+            <button class="menu-item" data-kategori="forretter">forretter</button>
+            <button class="menu-item" data-kategori="hovedretter">hovedretter</button>
+            <button class="menu-item" data-kategori="desserter">desserter</button>
+            <button class="menu-item" data-kategori="sideorders">sideorders</button>
+            <button class="menu-item" data-kategori="drikkevarer">drikkevarer</button>
+        </nav>
+    </header>
+
+    <main class="retContainer">
+        <section class="singleContainer">
+            <article class="ret">
+                <h2 class="overskrift" data-navn></h2>
+                <img class="billede" data-billede src="" alt="">
+                <p class="langBeskrivelse" data-langbeskrivelse></p>
+                <p>Pris: <span class="pris" data-pris></span>, </p>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get("id");
+
+        let dest = document.querySelector(".retContainer"),
+            retter, menuFilter = "alle";
+        document.addEventListener("DOMContentLoaded", hentJson);
+
+        async function hentJson() {
+            let jsonData = await fetch("menu.json");
+            retter = await jsonData.json();
+            visRetter();
+        }
+
+        document.querySelectorAll(".menu-item").forEach(knap => {
+            knap.addEventListener("click", filtrering)
+        });
+
+        function filtrering() {
+            dest.textContent = "";
+            menuFilter = this.getAttribute("data-kategori");
+            visRetter();
+        }
+
+        function visRetter() {
+            let dest = document.querySelector(".retContainer");
+            document.querySelector("header h1").textContent = menuFilter;
+            retter.forEach(ret => {
+                if (ret.id == id) {
+                    dest.querySelector("[data-navn]").textContent = ret.navn;
+                    dest.querySelector("[data-billede]").src = "imgs/small/" + ret.billede + "-sm.jpg";
+                    dest.querySelector("[data-langbeskrivelse]").textContent = ret.langbeskrivelse;
+                    dest.querySelector("[data-pris]").textContent = ret.pris;
+                }
+            });
+        }
+    </script>
+
+ <footer>
+        <div class="grid">
+            <div class="item item-a">
+                <h4>Adresse:</h4>
+                <p>Grønnegade 97<br>
+                    1234 København K</p>
+            </div>
+            <div class="item item-b">
+                <h4>Åbningstider:</h4>
+                <p>Mandag - fredag: 10:30-22:00<br>
+                    Lørdag: 12:00-23:00</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
